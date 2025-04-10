@@ -1,2 +1,105 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+
+public class FormularzZawodowy extends Application {
+
+    TextField imieField = new TextField();
+    TextField nazwiskoField = new TextField();
+    TextField miastoField = new TextField();
+    TextField emailField = new TextField();
+    TextField telefonField = new TextField();
+
+    CheckBox[] zawodCheckboxes;
+    String[] zawody = {"budowlaniec", "architekt", "hostessa", "piosenkarz", "poeta", "wiolonczelistka"};
+
+    ImageView imageView = new ImageView();
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20));
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        // Dane osobowe
+        grid.add(new Label("Imię:"), 0, 0);
+        grid.add(imieField, 1, 0);
+
+        grid.add(new Label("Nazwisko:"), 0, 1);
+        grid.add(nazwiskoField, 1, 1);
+
+        grid.add(new Label("Miasto:"), 0, 2);
+        grid.add(miastoField, 1, 2);
+
+        grid.add(new Label("Email:"), 0, 3);
+        grid.add(emailField, 1, 3);
+
+        grid.add(new Label("Telefon:"), 0, 4);
+        grid.add(telefonField, 1, 4);
+
+        // Zawody (checkboxy)
+        zawodCheckboxes = new CheckBox[zawody.length];
+        for (int i = 0; i < zawody.length; i++) {
+            zawodCheckboxes[i] = new CheckBox(zawody[i]);
+            grid.add(zawodCheckboxes[i], 2 + i % 2, i / 2);
+        }
+
+        // Przycisk
+        Button wyswietlButton = new Button("Wyświetl");
+        grid.add(wyswietlButton, 1, 6);
+
+        // Obrazek
+        imageView.setFitHeight(100);
+        imageView.setFitWidth(100);
+        grid.add(imageView, 0, 7, 3, 1);
+
+        wyswietlButton.setOnAction(e -> pokazDane());
+
+        Scene scene = new Scene(grid, 600, 400);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Formularz zawodowy");
+        primaryStage.show();
+    }
+
+    private void pokazDane() {
+        String imie = imieField.getText();
+        String nazwisko = nazwiskoField.getText();
+        String zawod = null;
+
+        for (CheckBox cb : zawodCheckboxes) {
+            if (cb.isSelected()) {
+                zawod = cb.getText();
+                break;
+            }
+        }
+
+        if (imie.isEmpty() || nazwisko.isEmpty() || zawod == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Uzupełnij dane i wybierz zawód.");
+            alert.show();
+            return;
+        }
+
+        String message = "Cześć, jestem " + imie + " " + nazwisko + ", obecnie pracuję jako " + zawod + ".";
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
+        alert.setTitle("Informacja");
+        alert.setHeaderText(null);
+        alert.show();
+
+        try {
+            Image image = new Image(getClass().getResourceAsStream("/images/" + zawod + ".jpg"));
+            imageView.setImage(image);
+        } catch (Exception ex) {
+            imageView.setImage(null);
+        }
+    }
+}
