@@ -1,3 +1,5 @@
+package com.example.demo1;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -96,7 +98,8 @@ public class FormularzZawodowy extends Application {
         alert.show();
 
         try {
-            Image image = new Image(getClass().getResourceAsStream("/images/" + zawod + ".jpg"));
+            String imagePath = "/assets/" + zawod + ".jpg"; // np. /assets/architekt.jpg
+            Image image = new Image(getClass().getResourceAsStream(imagePath));
             imageView.setImage(image);
         } catch (Exception ex) {
             imageView.setImage(null);
